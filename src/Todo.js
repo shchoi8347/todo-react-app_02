@@ -1,13 +1,29 @@
-import React from "react";
+import { ListItem, ListItemText, InputBase, Checkbox } from "@mui/material";
+import React,{useState} from "react";
 
 const Todo = (props) => {
-    let title = props.item;
-    let name = props.name;
+    //let title = props.item;
 
-    return  <div className="Todo">
-        <input type="checkbox" id="todo0" name="todo0" value="todo0" />
-        <label for="todo0">{title} by {name}</label>
-    </div>
-}
+    // item 상태 변수
+    const [item, setItem ] = useState(props.item);
+
+    return  (
+        <ListItem>
+            <Checkbox checked={item.done} />
+            <ListItemText>
+                <InputBase
+                    inputProps={{"aria-label": "naked"}}
+                    type="text"
+                    id={item.id}
+                    name={item.id}
+                    value={item.title}
+                    multiline={true}
+                    fullWidth={true}
+                />
+            </ListItemText>
+        </ListItem>
+    );    
+
+};
 
 export default Todo;

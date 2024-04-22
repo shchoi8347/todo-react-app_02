@@ -1,33 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Todo from './Todo';
 import {Paper, List, Container} from "@mui/material"
 import AddTodo from './AddTodo';
+import { call } from './ApiService'
 
 function App() {
   // item 상태 변수
-  const [items, setItems] = useState([{
-    id: "0",
-    title: "Hello World 1",
-    done: true
-  }, {
-    id: "1",
-    title: "Hello World 2",
-    done: false
-  }  ]);
+  const [items, setItems] = useState([]);
+
+  useEffect( () => {
+    call("/todo", "GET", null)
+      .then( (response) => setItems(response.data));
+  }  , []);
 
   const addItem = (item) => {
-    item.id = "ID-" + items.length;
-    item.done = false;
-    setItems([...items, item]); // 자동으로 리렌더링이 일어남
-    console.log("items: ", items);
+    call("/todo", "POST", item)
+      .then((response) => setItems(response.data));
+  };
+
+  const deleteItem = (item) => {
+    call("/todo", "DELETE", item)
+      .then((response) => setItems(response.data));
   }
+  
+  const editItem = (item) => {
+    call("/todo", "PUT", item)
+      .then((response) => setItems(response.data));
+  }
+
 
   let todoItems = 
     items.length > 0 &&
     <Paper style={{margin:16}}>
       <List>
-        {items.map((item)=><Todo item={item} key={item.id}/> )};
+        {items.map((item)=><Todo item={item} editItem={editItem} deleteItem={deleteItem} key={item.id}/> )};
       </List>
     </Paper>
 
